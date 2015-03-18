@@ -148,8 +148,9 @@ def Form(name, *tp):
 def Html(name, *tp):
    ttp = TupleToString(tp)
    res = "Content-Type: text/html\n\n"
-   res = res + "<html>\n<head>\n<meta content=text/html; charset=UTF-8 />\n"
-   res = res + "<title>%s</title>\n<body>\n%s\n</body>\n</html>" % (name,ttp[0])
+   res = res + "<html>\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>\n"
+   res = res + "<title>%s</title>\n<link rel=\"stylesheet\" type=\"text/css\" href=\"pyhtml.css\"/>\n"
+   res = res + "</head><body>\n%s\n</body>\n</html>" % (name,ttp[0])
    return res
 
 #example
