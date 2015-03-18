@@ -1,5 +1,6 @@
 #! /usr/bin/python
 #
+import sys
 
 def Label(name):
    patern = "<a>%s</a>\n"
@@ -108,7 +109,6 @@ def TR(*tp):
 
 def TH(*tp):
    return TableElement("th", tp)
-
 #tables>>
 
 
@@ -152,11 +152,13 @@ def Html(name, *tp):
    res = res + "<title>%s</title>\n<link rel=\"stylesheet\" type=\"text/css\" href=\"pyhtml-main.css\"/>\n"
    res = res + "</head><body>\n%s\n</body>\n</html>"
    #print res 
-   res = res % (name,ttp[0])
+   res = res % (name, ttp[0])
    return res
+
 
 #example
 if __name__ == "__main__":
+
   print(Html("MyHtml module test",
     Form("myhtml.py", 
     Header("My Html"),
@@ -177,4 +179,5 @@ if __name__ == "__main__":
     BR(),
     SubmitButton("save"),
     CancelButton("cancel"),
+    Paragraph("%s %s" % (sys.version, sys.path)),
     "")))
