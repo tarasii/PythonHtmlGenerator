@@ -36,10 +36,9 @@ def trySQL():
   try:
     conn = mysql.connector.connect(host="localhost", 
                      user="root", 
-                      passwd="aceofbase", database='main')  
+                      passwd="", database='main')  
   except:
-    #print ("Error connection")
-    return ("Error connection",)
+    return [("Error connection",)]
 
   c = conn.cursor()
 
@@ -48,13 +47,10 @@ def trySQL():
     c.execute('SELECT * FROM termometrs;')
     rows = c.fetchall()
     rows.insert(0,tuple([i[0] for i in c.description]))
-    #print rows
-    #res = SQLTable(rows)
 
   except:
-    #print ("Error command")
     conn.close()
-    return ("Error command",)
+    return [("Error command",)]
 
   conn.close()
   return rows
