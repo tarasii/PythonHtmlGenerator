@@ -1,0 +1,21 @@
+
+body {
+  font-family: Monospace;
+}
+
+table, th, td {
+  border: 1px solid green;
+  border-collapse: collapse;
+}
+
+th {
+  color: #FFFFFF;
+  background-color: #A7C942; 
+  text-align: center;
+}
+
+tr.alt td {
+  color: #000000;
+  background-color: #EAF2D3;
+}
+
