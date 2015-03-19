@@ -10,6 +10,9 @@ def Paragraph(txt):
    patern = "<p>%s</p>\n"
    return patern % (txt,)
 
+def PH(txt):
+   return Paragraph(txt)
+
 def Header(txt):
    patern = "<h1>%s</h1>\n"
    return patern % (txt,)

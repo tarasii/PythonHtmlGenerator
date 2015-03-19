@@ -31,42 +31,39 @@ def SQLTable(rows):
    res = mh.Table(res)
    return res
 
-def trySQL():
-  res = "";
+
+def SQLView(host,usr,pasw,db,query):
+  res = mh.Paragraph("null");
   try:
-    conn = mysql.connector.connect(host="localhost", 
-                     user="root", 
-                      passwd="", database='main')  
+    conn = mysql.connector.connect(
+      host=host, user=usr, passwd=pasw, database=db)
+  
   except:
-    return [("Error connection",)]
+    return mh.PH("Error connection")
 
   c = conn.cursor()
 
   try:
-    #c.execute('SHOW TABLES;')
-    c.execute('SELECT * FROM termometrs;')
+    c.execute(query)
     rows = c.fetchall()
     rows.insert(0,tuple([i[0] for i in c.description]))
 
   except:
     conn.close()
-    return [("Error command",)]
+    return mh.PH("Error command")
 
   conn.close()
-  return rows
+  return SQLTable(rows)
 
 
 #example
 if __name__ == "__main__":
-  rws = trySQL()
-  #print str(rws)
 
   print(mh.Html("MyHtml module test",
     mh.Form("myhtml.py", 
     mh.Header("My Html"),
-    mh.Label("base:"),
-    #mh.Paragraph(rws), 
-    SQLTable(rws),
+    mh.Label("base:"), 
+    SQLView("localhost","root","","main","SELECT * FROM termometrs;"),
     mh.SubmitButton("save"),
     mh.CancelButton("cancel"), 
     "")))
