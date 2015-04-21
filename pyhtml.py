@@ -2,6 +2,14 @@
 #
 import sys
 
+def JavaScript(txt):
+   patern = "<script type=\"text/javascript\">\n%s\n</script>\n"
+   return patern % (txt,)
+  
+def JavaScriptInc(txt):
+   patern = "<script type=\"text/javascript\" src=\"%s\"></script>\n"
+   return patern % (txt,)
+  
 def Label(name):
    patern = "<a>%s</a>\n"
    return patern % (name, )
@@ -16,6 +24,12 @@ def PH(txt):
 def Header(txt):
    patern = "<h1>%s</h1>\n"
    return patern % (txt,)
+
+def Button(name, text="", onclc=""):
+   if (text == ""): text = name
+   if (onclc == ""): patern = "<button id=%s%s>%s</button>\n"
+   else: patern = "<button id=%s onclick=\"%s;\">%s</button>\n"
+   return patern % (name, onclc, text)
 
 def SubmitButton(name):
    patern = "<input type=submit value=%s>\n"
@@ -44,10 +58,10 @@ def HyperLink(link, text=""):
    if not text:
       text = link.replace(pref,"")
 
-   if link.lower().find(pref)==-1:
-      link = pref + link
+#   if link.lower().find(pref)==-1:
+#      link = pref + link
  
-   patern = "<a href=%s>%s</a>\n"
+   patern = "<a href=\"%s\">%s</a>\n"
    return patern % (link, text)
 
 def InputCheckBox(name, ch = False):
@@ -113,6 +127,34 @@ def TR(*tp):
 def TH(*tp):
    return TableElement("th", tp)
 #tables>>
+
+def SQLTable(rows, name=""):
+   res = ""
+   alt = 2
+   for row in rows:
+      tmp = ""
+      #header
+      if alt == 2:
+         for col in row:
+            tmp = tmp + TH(str(col))
+         res = res + TR(tmp)
+         alt = 0
+      #alt
+      elif alt == 1:
+         for col in row:
+            tmp = tmp + TD(str(col))
+         res = res + TR(tmp,{"class":"\"alt\""})
+         alt = 0
+
+      else:
+         for col in row:
+            tmp = tmp + TD(str(col))
+         res = res + TR(tmp)
+         alt = 1
+
+   if name == "": res = Table(res,)      
+   else: res = Table(res, "id="+name)
+   return res
 
 
 def DictToString(dt):
