@@ -2,6 +2,7 @@
 #
 import sys
 
+html_extra_header = []
 
 def LeftTag(tag_name, **kwargs):
    pattern = "<{}{}>"
@@ -34,10 +35,16 @@ def Label(txt, **kwargs):
    #return patern % (name, )
    return Tag("a", txt, **kwargs)
 
-def Paragraph(txt):
+def Paragraph(txt, **kwargs):
    #patern = "<p>%s</p>\n"
    #return patern % (txt,)
-   return Tag("p", txt)
+   return Tag("p", txt, **kwargs)
+
+
+def Div(txt, **kwargs):
+   #patern = "<p>%s</p>\n"
+   #return patern % (txt,)
+   return Tag("p", txt, **kwargs)
 
 def PH(txt):
    return Paragraph(txt)
@@ -236,26 +243,59 @@ def TupleToString(tp):
 
    return (res, attr)
 
-def Form(name, *tp):
-   ttp = TupleToString(tp)
-   res = "<form name=%s method=post%s>\n %s </form>" % (name,ttp[1],ttp[0])
-   return res
+def Form(name, *args, **kwargs):
+   #ttp = TupleToString(args)
+   #res = "<form name=%s method=post%s>\n %s </form>" % (name,ttp[1],ttp[0])
+   #return res
+   dt = kwargs.copy()
+   dt["name"] = name
+   dt["method"] = "post"
+   return Tag("form", *args, **kwargs)
 
-def Html(name, *tp):
-   ttp = TupleToString(tp)
+
+def Html(*args):
+   return Tag("html", *args)
+
+def Head(*args):
+   return Tag("head", *args)
+
+def Title(txt):
+   return Tag("title", txt)
+
+def Body(*args):
+   return Tag("body", *args)
+
+def CssLink(href):
+   #dt = {"rel":rel, "type":tp, "href":href}
+   #return Tag("link", **dt)
+   pattern = "<link rel=\"stylesheet\" type=\"text/css\" href={}/>"
+   return pattern.format("\"pyhtml-main.css\"")
+
+
+def Meta(tp, content):
+   dt = {"http-equiv":tp, "content":content}
+   return Tag("meta", **dt)
+
+def Page(name, *args):
+   #ttp = TupleToString(tp)
    res = "Content-Type: text/html\n\n"
-   res = res + "<html>\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>\n"
-   res = res + "<title>%s</title>\n<link rel=\"stylesheet\" type=\"text/css\" href=\"pyhtml-main.css\"/>\n"
-   res = res + "</head><body>\n%s\n</body>\n</html>"
+   #res = res + "<html>\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>\n"
+   #res = res + "<title>%s</title>\n<link rel=\"stylesheet\" type=\"text/css\" href=\"pyhtml-main.css\"/>\n"
+   #res = res + "</head><body>\n%s\n</body>\n</html>"
    #print res 
-   res = res % (name, ttp[0])
+   #res = res % (name, ttp[0])
+   res = res + Html(Head(Title(name), 
+                         Meta("\"Content-Type\"", 
+                              "\"text/html; charset=UTF-8\""),
+                         CssLink("\"pyhtml-main.css\"")), 
+                    Body(*args))
    return res
 
 
 #example
 if __name__ == "__main__":
 
-  print(Html("MyHtml module test",
+  print(Page("MyHtml module test",
     Form("myhtml.py", 
     Header("My Html"),
     Label("Students assessment:"), 
