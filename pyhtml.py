@@ -2,28 +2,63 @@
 #
 import sys
 
+
+def LeftTag(tag_name, **kwargs):
+   pattern = "<{}{}>"
+   attrs = " ".join("{}{}{}".format(k,"=" if v else "",v) for k,v in kwargs.items())
+   if attrs:
+     attrs = " "+attrs
+   return pattern.format(tag_name, attrs)
+
+
+def Tag(tag_name, *args, **kwargs):
+   pattern = "{}{}</{}>"
+   text = "".join(args)
+   return pattern.format(LeftTag(tag_name, **kwargs), text, tag_name)
+
+
 def JavaScript(txt):
-   patern = "<script type=\"text/javascript\">\n%s\n</script>\n"
-   return patern % (txt,)
+   #patern = "<script type=\"text/javascript\">\n%s\n</script>\n"
+   #return patern % (txt,)
+   dt={"type":"\"text/javascript\""}
+   return Tag("script", txt, **dt)
   
 def JavaScriptInc(txt):
-   patern = "<script type=\"text/javascript\" src=\"%s\"></script>\n"
-   return patern % (txt,)
+   #patern = "<script type=\"text/javascript\" src=\"%s\"></script>\n"
+   #return patern % (txt,)
+   dt={"type":"\"text/javascript\""}
+   return Tag("script", "", **dt)
   
-def Label(name):
-   patern = "<a>%s</a>\n"
-   return patern % (name, )
+def Label(txt, **kwargs):
+   #patern = "<a>%s</a>\n"
+   #return patern % (name, )
+   return Tag("a", txt, **kwargs)
 
 def Paragraph(txt):
-   patern = "<p>%s</p>\n"
-   return patern % (txt,)
+   #patern = "<p>%s</p>\n"
+   #return patern % (txt,)
+   return Tag("p", txt)
 
 def PH(txt):
    return Paragraph(txt)
 
-def Header(txt):
-   patern = "<h1>%s</h1>\n"
-   return patern % (txt,)
+def Header(txt, val=1):
+   #patern = "<h1>%s</h1>\n"
+   #return patern % (txt,)
+   return Tag("h{}".format(val), txt)
+
+def H1(txt):
+   return Header(txt)
+
+def H2(txt):
+   return Header(txt, 2)
+
+def H3(txt):
+   return Header(txt, 3)
+
+def H4(txt):
+   return Header(txt, 4)
+
 
 def Button(name, text="", onclc=""):
    if (text == ""): text = name
@@ -31,26 +66,36 @@ def Button(name, text="", onclc=""):
    else: patern = "<button id=%s onclick=\"%s;\">%s</button>\n"
    return patern % (name, onclc, text)
 
-def SubmitButton(name):
-   patern = "<input type=submit value=%s>\n"
-   return patern % (name, )
+def TypeInput(tp,  **kwarg):
+   dt = kwarg.copy()
+   dt["type"] = tp;
+   return LeftTag("input", **dt)
 
-def CancelButton(name):
-   patern = "<input type=reset value=%s>\n"
-   return patern % (name, )
+def SubmitButton(txt):
+   #patern = "<input type=submit value=%s>\n"
+   #return patern % (txt, )
+   return TypeInput("submit", value=txt)
 
-def Input(name, val="", disabled=False):
-   strdis = ""
-   strval = ""
-   if disabled:
-      strdis = " disabled"
-   if val:
-      strval = " value="
-   patern = "<input name=%s%s%s%s>\n"
-   return patern % (name, strdis, strval, val)
+def CancelButton(txt):
+   #patern = "<input type=reset value=%s>\n"
+   #return patern % (name, )
+   return TypeInput("reset", value=txt)
+
+def Input(name, **kwargs):
+   #strdis = ""
+   #strval = ""
+   #if disabled:
+   #  strdis = " disabled"
+   #if val:
+   #  strval = " value="
+   #patern = "<input name=%s%s%s%s>\n"
+   #return patern % (name, strdis, strval, val)
+   dt = kwargs.copy()
+   dt["name"] = name
+   return LeftTag("input", **dt)
 
 def TextBox(name, val, disabled=False):
-   return Label(name+": ")+Input(name,val,disabled)
+   return Label(name+":")+Input(name, value=val, disabled="")
 
 
 def HyperLink(link, text=""):
@@ -61,17 +106,23 @@ def HyperLink(link, text=""):
 #   if link.lower().find(pref)==-1:
 #      link = pref + link
  
-   patern = "<a href=\"%s\">%s</a>\n"
-   return patern % (link, text)
+   #patern = "<a href=\"%s\">%s</a>\n"
+   #return patern % (link, text)
+   return Label(text, href=link)
 
-def InputCheckBox(name, ch = False):
-   chtxt = ""
-   if ch : chtxt = "checked"
-   patern = "<input type=checkbox name=%s %s>\n"
-   return patern % (name, chtxt)
 
-def CheckBox(name, ch = False):
-   return InputCheckBox(name, ch)+Label(name)
+def InputCheckBox(name, **kwargs):
+   #chtxt = ""
+   #if ch : chtxt = "checked"
+   #patern = "<input type=checkbox name=%s %s>\n"
+   #return patern % (name, chtxt)
+   dt = kwargs.copy()
+   return TypeInput("checkbox", **dt)
+
+def CheckBox(name, ch, **kwargs):
+   dt = kwargs.copy()
+   dt["checked"]=ch
+   return InputCheckBox(name, **dt)+Label(name)
 
 def NL():
    return "<br>\n"
